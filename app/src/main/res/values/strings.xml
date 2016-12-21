@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">SQLite</string>
+    <string name="student_list">Student List</string>
+    <string name="add_user">ADD STUDENT</string>
+    <string name="update">UPDATE</string>
+    <string name="delete">DELETE</string>
+    <string name="name">Name</string>
+    <string name="surname">Surname</string>
+    <string name="mark">Mark</string>
+    <string name="add_student">Add Student</string>
+    <string name="submit">SUBMIT</string>
+
 </resources>
