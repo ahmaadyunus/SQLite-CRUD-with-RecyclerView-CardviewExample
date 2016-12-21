@@ -34,9 +34,13 @@ public class HomeActivity extends AppCompatActivity {
         myDB = new DatabaseHelper(this);
 
         studentList();
+
         rv_student = (RecyclerView) findViewById(R.id.rv_student);
+
         mAdapter = new StudentAdapter(studentList);
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+
         rv_student.setLayoutManager(mLayoutManager);
         rv_student.setItemAnimator(new DefaultItemAnimator());
         rv_student.setAdapter(mAdapter);
@@ -47,12 +51,28 @@ public class HomeActivity extends AppCompatActivity {
                 name_update=studentList.get(position).getName();
                 surname_update=studentList.get(position).getSurname();
                 mark_update=studentList.get(position).getMark();
+
                 update_student(studentList.get(position).getId(),name_update,surname_update,mark_update);
             }
 
             @Override
-            public void onLongClick(View view, int position) {
-                Toast.makeText(getApplicationContext(), studentList.get(position).getId() + " is long pressed!", Toast.LENGTH_SHORT).show();
+            public void onLongClick(View view, final int position) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+                builder.setTitle(R.string.delete_student);
+                builder.setMessage(R.string.confirm_delete);
+                builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        delete_student(studentList.get(position).getId());
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.show();
 
             }
         }));
@@ -66,9 +86,10 @@ public class HomeActivity extends AppCompatActivity {
         }
         while (students.moveToNext()) {
             id=students.getString(0);
-            name=students.getString(1);
-            surname=students.getString(2);
-            mark=students.getString(3);
+            name= getString(R.string.name) +"  :  "+ students.getString(1);
+            surname=getString(R.string.surname) +"  :  "+students.getString(2);
+            mark=getString(R.string.mark) +"  :  "+students.getString(3);
+
             Student student = new Student(id, name, surname, mark);
             studentList.add(student);
         }
@@ -84,6 +105,7 @@ public class HomeActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.add_student);
         builder.setView(dialoglayout);
+
         builder.setPositiveButton(R.string.submit, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -91,16 +113,19 @@ public class HomeActivity extends AppCompatActivity {
                 name_input = (EditText) dialog1.findViewById(R.id.name_input_ET);
                 surname_input = (EditText) dialog1.findViewById(R.id.surname_input_ET);
                 mark_input = (EditText) dialog1.findViewById(R.id.mark_input_ET);
+
                 boolean result = myDB.save_student(name_input.getText().toString(),
                         surname_input.getText().toString(),
                         mark_input.getText().toString()
                 );
+
                 if (result) {
                     Toast.makeText(HomeActivity.this, "Success Add Student", Toast.LENGTH_LONG).show();
 
                 }else {
                     Toast.makeText(HomeActivity.this, "Fails Add Student", Toast.LENGTH_LONG).show();
                 }
+
                 finish();
                 startActivity(getIntent());
             }
@@ -116,6 +141,7 @@ public class HomeActivity extends AppCompatActivity {
         name_input = (EditText) dialoglayout.findViewById(R.id.name_input_ET);
         surname_input = (EditText) dialoglayout.findViewById(R.id.surname_input_ET);
         mark_input = (EditText) dialoglayout.findViewById(R.id.mark_input_ET);
+
         name_input.setText(name);
         surname_input.setText(surname);
         mark_input.setText(mark);
@@ -127,24 +153,39 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Dialog dialog2 = (Dialog) dialog;
+
                 name_input = (EditText) dialog2.findViewById(R.id.name_input_ET);
                 surname_input = (EditText) dialog2.findViewById(R.id.surname_input_ET);
                 mark_input = (EditText) dialog2.findViewById(R.id.mark_input_ET);
+
                 boolean result = myDB.update_student(position,name_input.getText().toString(),
                         surname_input.getText().toString(),
                         mark_input.getText().toString()
                 );
+
                 if (result) {
                     Toast.makeText(HomeActivity.this, "Success Update Student with ID : " +position, Toast.LENGTH_LONG).show();
 
                 }else {
                     Toast.makeText(HomeActivity.this, "Fails Add Student", Toast.LENGTH_LONG).show();
                 }
+
                 finish();
                 startActivity(getIntent());
             }
         });
         builder.show();
+    }
+    public void delete_student(String id){
+        Integer result2 = myDB.delete_student(id);
+        if (result2 > 0) {
+            Toast.makeText(HomeActivity.this, "Success delete a Student", Toast.LENGTH_LONG).show();
+            finish();
+            startActivity(getIntent());
+        }else {
+            Toast.makeText(HomeActivity.this, "Fails delete a Student", Toast.LENGTH_LONG).show();
+
+        }
     }
 
 }
