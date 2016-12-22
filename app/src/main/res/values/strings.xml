@@ -12,5 +12,9 @@
     <string name="confirm_delete">Are you sure want to delete ?</string>
     <string name="cancel">CANCEL</string>
     <string name="delete_student">Delete Student</string>
+    <string name="id">ID</string>
+    <string name="name_lbl">Name</string>
+    <string name="surname_lbl">Surname</string>
+    <string name="mark_lbl">Mark</string>
 
 </resources>

@@ -33,7 +33,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         myDB = new DatabaseHelper(this);
 
-        studentList();
+
 
         rv_student = (RecyclerView) findViewById(R.id.rv_student);
 
@@ -44,6 +44,7 @@ public class HomeActivity extends AppCompatActivity {
         rv_student.setLayoutManager(mLayoutManager);
         rv_student.setItemAnimator(new DefaultItemAnimator());
         rv_student.setAdapter(mAdapter);
+        studentList();
         rv_student.addOnItemTouchListener(new RecyclerViewTouchListener(getApplicationContext(), rv_student, new RecyclerViewClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -84,15 +85,17 @@ public class HomeActivity extends AppCompatActivity {
 
             return;
         }
+       studentList.clear();
         while (students.moveToNext()) {
             id=students.getString(0);
-            name= getString(R.string.name) +"  :  "+ students.getString(1);
-            surname=getString(R.string.surname) +"  :  "+students.getString(2);
-            mark=getString(R.string.mark) +"  :  "+students.getString(3);
+            name=students.getString(1);
+            surname=students.getString(2);
+            mark=students.getString(3);
 
             Student student = new Student(id, name, surname, mark);
             studentList.add(student);
         }
+        mAdapter.notifyDataSetChanged();
 
     }
 
@@ -121,16 +124,17 @@ public class HomeActivity extends AppCompatActivity {
 
                 if (result) {
                     Toast.makeText(HomeActivity.this, "Success Add Student", Toast.LENGTH_LONG).show();
-
+                    studentList();
                 }else {
                     Toast.makeText(HomeActivity.this, "Fails Add Student", Toast.LENGTH_LONG).show();
                 }
 
-                finish();
-                startActivity(getIntent());
+//                finish();
+//                startActivity(getIntent());
             }
         });
         builder.show();
+
 
     }
     public void update_student(final String position, String name, String surname, String mark){
@@ -165,13 +169,12 @@ public class HomeActivity extends AppCompatActivity {
 
                 if (result) {
                     Toast.makeText(HomeActivity.this, "Success Update Student with ID : " +position, Toast.LENGTH_LONG).show();
-
+                    studentList();
                 }else {
                     Toast.makeText(HomeActivity.this, "Fails Add Student", Toast.LENGTH_LONG).show();
                 }
 
-                finish();
-                startActivity(getIntent());
+
             }
         });
         builder.show();
@@ -180,8 +183,7 @@ public class HomeActivity extends AppCompatActivity {
         Integer result2 = myDB.delete_student(id);
         if (result2 > 0) {
             Toast.makeText(HomeActivity.this, "Success delete a Student", Toast.LENGTH_LONG).show();
-            finish();
-            startActivity(getIntent());
+           studentList();
         }else {
             Toast.makeText(HomeActivity.this, "Fails delete a Student", Toast.LENGTH_LONG).show();
 
